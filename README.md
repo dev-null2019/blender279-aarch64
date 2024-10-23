@@ -1,4 +1,6 @@
-# Blender 2.79 ES2 for Aarch64 "Portable"
+# Blender 2.79 ES2 for Debian Bookworm / arm64 "Portable" works perfectly on the RPi 4!
+
+Forked from https://source.mnt.re/reform/blender-279-es2-aarch64-bin - I updated it with all missing libs and Python 3.9 to work on Debian 12
 
 ## What is this?
 
@@ -9,7 +11,7 @@ This is the final Blender version that can run on 64-bit ARM machines with embed
 Debian apt packages you still need:
 
 ```bash
-apt install libncursesw6
+apt install libncursesw6 libjemalloc2
 ```
 
 Also you need to link or or copy the `./usr/share/blender` folder to your `/usr/share`:

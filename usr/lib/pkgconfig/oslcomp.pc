@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: oslcomp
+Description: oslcomp Compile OSL shaders from source
+URL: https://github.com/AcademySoftwareFoundation/OpenShadingLanguage
+Version: 1.11.14
+Libs: -L${libdir} -loslcomp
+Cflags: -I${includedir}

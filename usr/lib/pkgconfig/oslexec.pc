@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: oslexec
+Description: oslexec Execute compiled OSL shaders
+URL: https://github.com/AcademySoftwareFoundation/OpenShadingLanguage
+Version: 1.11.14
+Libs: -L${libdir} -loslexec
+Cflags: -I${includedir}

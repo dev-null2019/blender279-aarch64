@@ -1,0 +1,927 @@
+OpenShadingLanguage 1.00
+# Compiled by oslc 1.11.14
+# options: -q -O2 -I/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders -o /build/blender-2.7-es2/src/blender-build/intern/cycles/kernel/shaders/node_musgrave_texture.oso
+shader node_musgrave_texture
+param	int	use_mapping	0		%read{8,8} %write{2147483647,-1}
+param	matrix	mapping	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0		%read{9,9} %write{2147483647,-1}
+param	string	type	"fBM"		%read{11,253} %write{2147483647,-1}
+param	float	Dimension	2		%read{1,1} %write{2147483647,-1}
+param	float	Lacunarity	1		%read{5,5} %write{2147483647,-1}
+param	float	Detail	2		%read{3,3} %write{2147483647,-1}
+param	float	Offset	0		%read{136,315} %write{2147483647,-1}
+param	float	Gain	1		%read{137,226} %write{2147483647,-1}
+param	float	Scale	5		%read{10,10} %write{2147483647,-1}
+param	point	Vector	0 0 0		%read{7,7} %write{0,0} %initexpr
+oparam	float	Fac	0		%read{322,322} %write{64,321}
+oparam	color	Color	0 0 0		%read{2147483647,-1} %write{322,322}
+global	point	P	%read{0,0} %write{2147483647,-1}
+local	float	___360_f	%read{21,314} %write{21,308}
+local	float	___367_rmd	%read{98,112} %write{97,97}
+local	float	___367_value	%read{75,115} %write{68,114}
+local	float	___367_pwr	%read{75,113} %write{69,95}
+local	float	___367_pwHL	%read{75,95} %write{71,71}
+local	int	___367_i	%read{75,95} %write{74,95}
+local	point	___367_p	%read{75,105} %write{72,95}
+local	float	___370_rmd	%read{45,47} %write{44,44}
+local	float	___370_value	%read{21,63} %write{14,62}
+local	float	___370_pwr	%read{21,47} %write{15,42}
+local	float	___370_pwHL	%read{21,42} %write{17,17}
+local	int	___370_i	%read{21,42} %write{20,42}
+local	point	___370_p	%read{21,53} %write{18,42}
+local	float	___373_value	%read{276,320} %write{272,319}
+local	float	___373_increment	%read{276,318} %write{276,317}
+local	float	___373_rmd	%read{301,318} %write{300,300}
+local	float	___373_pwHL	%read{258,298} %write{257,257}
+local	float	___373_pwr	%read{276,316} %write{258,298}
+local	int	___373_i	%read{276,298} %write{275,298}
+local	point	___373_p	%read{264,308} %write{259,298}
+local	float	___377_result	%read{137,194} %write{136,193}
+local	float	___377_signal	%read{141,173} %write{141,173}
+local	float	___377_weight	%read{141,173} %write{137,173}
+local	float	___377_rmd	%read{176,192} %write{175,175}
+local	float	___377_pwHL	%read{122,173} %write{121,121}
+local	float	___377_pwr	%read{141,191} %write{122,173}
+local	int	___377_i	%read{141,173} %write{140,173}
+local	point	___377_p	%read{128,183} %write{123,173}
+local	float	___380_result	%read{222,251} %write{218,250}
+local	float	___380_signal	%read{217,250} %write{216,250}
+local	float	___380_weight	%read{222,250} %write{219,250}
+local	float	___380_pwHL	%read{201,250} %write{200,200}
+local	float	___380_pwr	%read{222,250} %write{201,250}
+local	int	___380_i	%read{222,250} %write{221,250}
+local	point	___380_p	%read{207,250} %write{202,250}
+local	float	dimension	%read{16,256} %write{1,1}
+local	float	octaves	%read{21,300} %write{4,4}
+local	float	lacunarity	%read{17,298} %write{5,5}
+local	float	intensity	%read{64,321} %write{6,6}
+local	point	p	%read{9,259} %write{7,10}
+const	float	$const1	9.99999975e-06		%read{1,5} %write{2147483647,-1}
+const	float	$const2	0		%read{4,304} %write{2147483647,-1}
+const	float	$const3	16		%read{3,3} %write{2147483647,-1}
+const	string	$const4	"clamp"		%read{2,227} %write{2147483647,-1}
+temp	float	$tmp1	%read{4,4} %write{3,3}
+const	float	$const5	1		%read{6,228} %write{2147483647,-1}
+const	string	$const6	"multifractal"		%read{11,11} %write{2147483647,-1}
+temp	int	$tmp2	%read{12,12} %write{11,11}
+temp	float	$tmp3	%read{64,64} %write{63,63}
+const	string	$const7	"noise_musgrave_multi_fractal"		%read{13,13} %write{2147483647,-1}
+temp	float	$tmp4	%read{17,17} %write{16,16}
+const	int	$const8	0		%read{20,310} %write{2147483647,-1}
+temp	int	$tmp5	%read{21,42} %write{21,42}
+temp	int	$tmp6	%read{21,42} %write{21,42}
+temp	int	$tmp7	%read{19,42} %write{20,42}
+temp	float	$tmp8	%read{21,42} %write{21,42}
+const	string	$const9	"signed"		%read{26,305} %write{2147483647,-1}
+const	string	$const10	"safe_noise"		%read{24,303} %write{2147483647,-1}
+temp	int	$tmp9	%read{21,42} %write{21,42}
+const	string	$const11	"perlin"		%read{28,307} %write{2147483647,-1}
+temp	int	$tmp10	%read{21,42} %write{21,42}
+temp	int	$tmp11	%read{21,42} %write{21,42}
+const	float	$const12	0.5		%read{33,312} %write{2147483647,-1}
+temp	float	$tmp12	%read{21,42} %write{21,42}
+temp	float	$tmp13	%read{21,42} %write{21,42}
+const	int	$const13	1		%read{42,298} %write{2147483647,-1}
+temp	int	$tmp14	%read{2147483647,-1} %write{21,42}
+temp	float	$tmp15	%read{44,44} %write{43,43}
+temp	int	$tmp16	%read{46,46} %write{45,45}
+temp	float	$tmp17	%read{60,60} %write{47,47}
+temp	float	$tmp18	%read{60,60} %write{57,59}
+temp	int	$tmp19	%read{51,51} %write{50,50}
+temp	int	$tmp20	%read{55,55} %write{54,54}
+temp	int	$tmp21	%read{56,56} %write{55,55}
+temp	float	$tmp22	%read{61,61} %write{60,60}
+temp	float	$tmp23	%read{62,62} %write{61,61}
+const	string	$const14	"fBM"		%read{65,65} %write{2147483647,-1}
+temp	int	$tmp24	%read{66,66} %write{65,65}
+temp	float	$tmp25	%read{116,116} %write{115,115}
+const	string	$const15	"noise_musgrave_fBm"		%read{67,67} %write{2147483647,-1}
+temp	float	$tmp26	%read{71,71} %write{70,70}
+temp	int	$tmp27	%read{75,95} %write{75,95}
+temp	int	$tmp28	%read{75,95} %write{75,95}
+temp	int	$tmp29	%read{73,95} %write{74,95}
+temp	float	$tmp30	%read{75,95} %write{75,95}
+temp	int	$tmp31	%read{75,95} %write{75,95}
+temp	int	$tmp32	%read{75,95} %write{75,95}
+temp	int	$tmp33	%read{75,95} %write{75,95}
+temp	float	$tmp34	%read{75,95} %write{75,95}
+temp	int	$tmp35	%read{2147483647,-1} %write{75,95}
+temp	float	$tmp36	%read{97,97} %write{96,96}
+temp	int	$tmp37	%read{99,99} %write{98,98}
+temp	float	$tmp38	%read{112,112} %write{109,111}
+temp	int	$tmp39	%read{103,103} %write{102,102}
+temp	int	$tmp40	%read{107,107} %write{106,106}
+temp	int	$tmp41	%read{108,108} %write{107,107}
+temp	float	$tmp42	%read{113,113} %write{112,112}
+temp	float	$tmp43	%read{114,114} %write{113,113}
+const	string	$const16	"hybrid_multifractal"		%read{117,117} %write{2147483647,-1}
+temp	int	$tmp44	%read{118,118} %write{117,117}
+temp	float	$tmp45	%read{195,195} %write{194,194}
+const	string	$const17	"noise_musgrave_hybrid_multi_fractal"		%read{119,119} %write{2147483647,-1}
+temp	float	$tmp46	%read{121,121} %write{120,120}
+temp	float	$tmp47	%read{136,136} %write{133,135}
+temp	int	$tmp48	%read{127,127} %write{126,126}
+temp	int	$tmp49	%read{131,131} %write{130,130}
+temp	int	$tmp50	%read{132,132} %write{131,131}
+const	float	$const18	0.00100000005		%read{141,141} %write{2147483647,-1}
+temp	int	$tmp51	%read{141,173} %write{141,173}
+temp	int	$tmp52	%read{141,173} %write{141,173}
+temp	int	$tmp53	%read{141,173} %write{141,173}
+temp	int	$tmp54	%read{141,173} %write{141,173}
+temp	int	$tmp55	%read{141,173} %write{141,173}
+temp	int	$tmp56	%read{139,173} %write{140,173}
+temp	int	$tmp57	%read{141,173} %write{141,173}
+temp	float	$tmp58	%read{141,173} %write{141,173}
+temp	int	$tmp59	%read{141,173} %write{141,173}
+temp	int	$tmp60	%read{141,173} %write{141,173}
+temp	int	$tmp61	%read{141,173} %write{141,173}
+temp	float	$tmp62	%read{141,173} %write{141,173}
+temp	float	$tmp63	%read{141,173} %write{141,173}
+temp	float	$tmp64	%read{141,173} %write{141,173}
+temp	int	$tmp65	%read{2147483647,-1} %write{141,173}
+temp	float	$tmp66	%read{175,175} %write{174,174}
+temp	int	$tmp67	%read{177,177} %write{176,176}
+temp	float	$tmp68	%read{190,190} %write{187,189}
+temp	int	$tmp69	%read{181,181} %write{180,180}
+temp	int	$tmp70	%read{185,185} %write{184,184}
+temp	int	$tmp71	%read{186,186} %write{185,185}
+temp	float	$tmp72	%read{191,191} %write{190,190}
+temp	float	$tmp73	%read{192,192} %write{191,191}
+temp	float	$tmp74	%read{193,193} %write{192,192}
+const	string	$const19	"ridged_multifractal"		%read{196,196} %write{2147483647,-1}
+temp	int	$tmp75	%read{197,197} %write{196,196}
+temp	float	$tmp76	%read{252,252} %write{251,251}
+const	string	$const20	"noise_musgrave_ridged_multi_fractal"		%read{198,198} %write{2147483647,-1}
+temp	float	$tmp77	%read{200,200} %write{199,199}
+temp	float	$tmp78	%read{216,216} %write{215,215}
+temp	float	$tmp79	%read{215,215} %write{212,214}
+temp	int	$tmp80	%read{206,206} %write{205,205}
+temp	int	$tmp81	%read{210,210} %write{209,209}
+temp	int	$tmp82	%read{211,211} %write{210,210}
+temp	int	$tmp83	%read{222,250} %write{222,250}
+temp	int	$tmp84	%read{222,250} %write{222,250}
+temp	int	$tmp85	%read{220,250} %write{221,250}
+temp	float	$tmp86	%read{222,250} %write{222,250}
+temp	float	$tmp87	%read{222,250} %write{222,250}
+temp	float	$tmp88	%read{222,250} %write{222,250}
+temp	float	$tmp89	%read{222,250} %write{222,250}
+temp	int	$tmp90	%read{222,250} %write{222,250}
+temp	int	$tmp91	%read{222,250} %write{222,250}
+temp	int	$tmp92	%read{222,250} %write{222,250}
+temp	float	$tmp93	%read{222,250} %write{222,250}
+temp	int	$tmp94	%read{2147483647,-1} %write{222,250}
+const	string	$const21	"hetero_terrain"		%read{253,253} %write{2147483647,-1}
+temp	int	$tmp95	%read{254,254} %write{253,253}
+temp	float	$tmp96	%read{321,321} %write{320,320}
+const	string	$const22	"noise_musgrave_hetero_terrain"		%read{255,255} %write{2147483647,-1}
+temp	float	$tmp97	%read{257,257} %write{256,256}
+temp	float	$tmp98	%read{272,272} %write{269,271}
+temp	int	$tmp99	%read{263,263} %write{262,262}
+temp	int	$tmp100	%read{267,267} %write{266,266}
+temp	int	$tmp101	%read{268,268} %write{267,267}
+temp	int	$tmp102	%read{276,298} %write{276,298}
+temp	int	$tmp103	%read{276,298} %write{276,298}
+temp	int	$tmp104	%read{274,298} %write{275,298}
+temp	float	$tmp105	%read{276,298} %write{276,298}
+temp	int	$tmp106	%read{276,298} %write{276,298}
+temp	int	$tmp107	%read{276,298} %write{276,298}
+temp	int	$tmp108	%read{276,298} %write{276,298}
+temp	float	$tmp109	%read{276,298} %write{276,298}
+temp	float	$tmp110	%read{276,298} %write{276,298}
+temp	int	$tmp111	%read{2147483647,-1} %write{276,298}
+temp	float	$tmp112	%read{300,300} %write{299,299}
+temp	int	$tmp113	%read{302,302} %write{301,301}
+temp	float	$tmp114	%read{315,315} %write{312,314}
+temp	int	$tmp115	%read{306,306} %write{305,305}
+temp	int	$tmp116	%read{310,310} %write{309,309}
+temp	int	$tmp117	%read{311,311} %write{310,310}
+temp	float	$tmp118	%read{316,316} %write{315,315}
+temp	float	$tmp119	%read{317,317} %write{316,316}
+temp	float	$tmp120	%read{319,319} %write{318,318}
+code Vector
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:202
+# 	point Vector = P,
+	assign		Vector P 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl"} %line{202} %argrw{"wr"}
+code ___main___
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:206
+# 	float dimension = max(Dimension, 1e-5);
+	max		dimension Dimension $const1 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl"} %line{206} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:207
+# 	float octaves = clamp(Detail, 0.0, 16.0);
+	functioncall	$const4 5 	%line{207} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/stdosl.h:144
+# float  clamp (float x, float minval, float maxval) { return max(min(x,maxval),minval); }
+	min		$tmp1 Detail $const3 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/stdosl.h"} %line{144} %argrw{"wrr"}
+	max		octaves $tmp1 $const2 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:208
+# 	float lacunarity = max(Lacunarity, 1e-5);
+	max		lacunarity Lacunarity $const1 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl"} %line{208} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:209
+# 	float intensity = 1.0;
+	assign		intensity $const5 	%line{209} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:211
+# 	point p = Vector;
+	assign		p Vector 	%line{211} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:213
+# 	if (use_mapping)
+	if		use_mapping 10 10 	%line{213} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:214
+# 		p = transform(mapping, p);
+	transform	p mapping p 	%line{214} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:216
+# 	p = p * Scale;
+	mul		p p Scale 	%line{216} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:218
+# 	if (type == "multifractal")
+	eq		$tmp2 type $const6 	%line{218} %argrw{"wrr"}
+	if		$tmp2 65 322 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:219
+# 		Fac = intensity * noise_musgrave_multi_fractal(p, dimension, lacunarity, octaves);
+	functioncall	$const7 64 	%line{219} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:61
+# 	float value = 1.0;
+	assign		___370_value $const5 	%line{61} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:62
+# 	float pwr = 1.0;
+	assign		___370_pwr $const5 	%line{62} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:63
+# 	float pwHL = pow(lacunarity, -H);
+	neg		$tmp4 dimension 	%line{63} %argrw{"wr"}
+	pow		___370_pwHL lacunarity $tmp4 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:65
+# 	point p = ip;
+	assign		___370_p p 	%line{65} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:67
+# 	for (i = 0; i < (int)octaves; i++) {
+	for		$tmp7 21 24 41 43 	%line{67} %argrw{"r"}
+	assign		___370_i $const8 	%argrw{"wr"}
+	assign		$tmp5 octaves 	%argrw{"wr"}
+	lt		$tmp6 ___370_i $tmp5 	%argrw{"wrr"}
+	neq		$tmp7 $tmp6 $const8 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:68
+# 		value *= (pwr * safe_noise(p, "signed") + 1.0);
+	functioncall	$const10 36 	%line{68} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:92
+# 	float f = 0.0;
+	assign		___360_f $const2 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h"} %line{92} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:95
+# 	if (type == "signed")
+	eq		$tmp9 $const9 $const9 	%line{95} %argrw{"wrr"}
+	if		$tmp9 29 30 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:96
+# 		f = noise("perlin", p);
+	noise		___360_f $const11 ___370_p 	%line{96} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:100
+# 		f = noise(p);
+	noise		___360_f ___370_p 	%line{100} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:103
+# 	if (!isfinite(f))
+	isfinite	$tmp10 ___360_f 	%line{103} %argrw{"wr"}
+	eq		$tmp11 $tmp10 $const8 	%argrw{"wrr"}
+	if		$tmp11 35 35 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:104
+# 		return 0.5;
+	assign		$tmp8 $const12 	%line{104} %argrw{"wr"}
+	return
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:106
+# 	return f;
+	assign		$tmp8 ___360_f 	%line{106} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:68
+# 		value *= (pwr * safe_noise(p, "signed") + 1.0);
+	mul		$tmp12 ___370_pwr $tmp8 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl"} %line{68} %argrw{"wrr"}
+	add		$tmp13 $tmp12 $const5 	%argrw{"wrr"}
+	mul		___370_value ___370_value $tmp13 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:69
+# 		pwr *= pwHL;
+	mul		___370_pwr ___370_pwr ___370_pwHL 	%line{69} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:70
+# 		p *= lacunarity;
+	mul		___370_p ___370_p lacunarity 	%line{70} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:67
+# 	for (i = 0; i < (int)octaves; i++) {
+	assign		$tmp14 ___370_i 	%line{67} %argrw{"wr"}
+	add		___370_i ___370_i $const13 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:73
+# 	rmd = octaves - floor(octaves);
+	floor		$tmp15 octaves 	%line{73} %argrw{"wr"}
+	sub		___370_rmd octaves $tmp15 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:74
+# 	if (rmd != 0.0)
+	neq		$tmp16 ___370_rmd $const2 	%line{74} %argrw{"wrr"}
+	if		$tmp16 63 63 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:75
+# 		value *= (rmd * pwr * safe_noise(p, "signed") + 1.0); /* correct? */
+	mul		$tmp17 ___370_rmd ___370_pwr 	%line{75} %argrw{"wrr"}
+	functioncall	$const10 60 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:92
+# 	float f = 0.0;
+	assign		___360_f $const2 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h"} %line{92} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:95
+# 	if (type == "signed")
+	eq		$tmp19 $const9 $const9 	%line{95} %argrw{"wrr"}
+	if		$tmp19 53 54 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:96
+# 		f = noise("perlin", p);
+	noise		___360_f $const11 ___370_p 	%line{96} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:100
+# 		f = noise(p);
+	noise		___360_f ___370_p 	%line{100} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:103
+# 	if (!isfinite(f))
+	isfinite	$tmp20 ___360_f 	%line{103} %argrw{"wr"}
+	eq		$tmp21 $tmp20 $const8 	%argrw{"wrr"}
+	if		$tmp21 59 59 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:104
+# 		return 0.5;
+	assign		$tmp18 $const12 	%line{104} %argrw{"wr"}
+	return
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:106
+# 	return f;
+	assign		$tmp18 ___360_f 	%line{106} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:75
+# 		value *= (rmd * pwr * safe_noise(p, "signed") + 1.0); /* correct? */
+	mul		$tmp22 $tmp17 $tmp18 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl"} %line{75} %argrw{"wrr"}
+	add		$tmp23 $tmp22 $const5 	%argrw{"wrr"}
+	mul		___370_value ___370_value $tmp23 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:77
+# 	return value;
+	assign		$tmp3 ___370_value 	%line{77} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:219
+# 		Fac = intensity * noise_musgrave_multi_fractal(p, dimension, lacunarity, octaves);
+	mul		Fac intensity $tmp3 	%line{219} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:220
+# 	else if (type == "fBM")
+	eq		$tmp24 type $const14 	%line{220} %argrw{"wrr"}
+	if		$tmp24 117 322 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:221
+# 		Fac = intensity * noise_musgrave_fBm(p, dimension, lacunarity, octaves);
+	functioncall	$const15 116 	%line{221} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:32
+# 	float value = 0.0;
+	assign		___367_value $const2 	%line{32} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:33
+# 	float pwr = 1.0;
+	assign		___367_pwr $const5 	%line{33} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:34
+# 	float pwHL = pow(lacunarity, -H);
+	neg		$tmp26 dimension 	%line{34} %argrw{"wr"}
+	pow		___367_pwHL lacunarity $tmp26 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:36
+# 	point p = ip;
+	assign		___367_p p 	%line{36} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:38
+# 	for (i = 0; i < (int)octaves; i++) {
+	for		$tmp29 75 78 94 96 	%line{38} %argrw{"r"}
+	assign		___367_i $const8 	%argrw{"wr"}
+	assign		$tmp27 octaves 	%argrw{"wr"}
+	lt		$tmp28 ___367_i $tmp27 	%argrw{"wrr"}
+	neq		$tmp29 $tmp28 $const8 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:39
+# 		value += safe_noise(p, "signed") * pwr;
+	functioncall	$const10 90 	%line{39} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:92
+# 	float f = 0.0;
+	assign		___360_f $const2 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h"} %line{92} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:95
+# 	if (type == "signed")
+	eq		$tmp31 $const9 $const9 	%line{95} %argrw{"wrr"}
+	if		$tmp31 83 84 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:96
+# 		f = noise("perlin", p);
+	noise		___360_f $const11 ___367_p 	%line{96} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:100
+# 		f = noise(p);
+	noise		___360_f ___367_p 	%line{100} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:103
+# 	if (!isfinite(f))
+	isfinite	$tmp32 ___360_f 	%line{103} %argrw{"wr"}
+	eq		$tmp33 $tmp32 $const8 	%argrw{"wrr"}
+	if		$tmp33 89 89 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:104
+# 		return 0.5;
+	assign		$tmp30 $const12 	%line{104} %argrw{"wr"}
+	return
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:106
+# 	return f;
+	assign		$tmp30 ___360_f 	%line{106} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:39
+# 		value += safe_noise(p, "signed") * pwr;
+	mul		$tmp34 $tmp30 ___367_pwr 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl"} %line{39} %argrw{"wrr"}
+	add		___367_value ___367_value $tmp34 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:40
+# 		pwr *= pwHL;
+	mul		___367_pwr ___367_pwr ___367_pwHL 	%line{40} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:41
+# 		p *= lacunarity;
+	mul		___367_p ___367_p lacunarity 	%line{41} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:38
+# 	for (i = 0; i < (int)octaves; i++) {
+	assign		$tmp35 ___367_i 	%line{38} %argrw{"wr"}
+	add		___367_i ___367_i $const13 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:44
+# 	rmd = octaves - floor(octaves);
+	floor		$tmp36 octaves 	%line{44} %argrw{"wr"}
+	sub		___367_rmd octaves $tmp36 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:45
+# 	if (rmd != 0.0)
+	neq		$tmp37 ___367_rmd $const2 	%line{45} %argrw{"wrr"}
+	if		$tmp37 115 115 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:46
+# 		value += rmd * safe_noise(p, "signed") * pwr;
+	functioncall	$const10 112 	%line{46} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:92
+# 	float f = 0.0;
+	assign		___360_f $const2 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h"} %line{92} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:95
+# 	if (type == "signed")
+	eq		$tmp39 $const9 $const9 	%line{95} %argrw{"wrr"}
+	if		$tmp39 105 106 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:96
+# 		f = noise("perlin", p);
+	noise		___360_f $const11 ___367_p 	%line{96} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:100
+# 		f = noise(p);
+	noise		___360_f ___367_p 	%line{100} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:103
+# 	if (!isfinite(f))
+	isfinite	$tmp40 ___360_f 	%line{103} %argrw{"wr"}
+	eq		$tmp41 $tmp40 $const8 	%argrw{"wrr"}
+	if		$tmp41 111 111 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:104
+# 		return 0.5;
+	assign		$tmp38 $const12 	%line{104} %argrw{"wr"}
+	return
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:106
+# 	return f;
+	assign		$tmp38 ___360_f 	%line{106} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:46
+# 		value += rmd * safe_noise(p, "signed") * pwr;
+	mul		$tmp42 ___367_rmd $tmp38 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl"} %line{46} %argrw{"wrr"}
+	mul		$tmp43 $tmp42 ___367_pwr 	%argrw{"wrr"}
+	add		___367_value ___367_value $tmp43 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:48
+# 	return value;
+	assign		$tmp25 ___367_value 	%line{48} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:221
+# 		Fac = intensity * noise_musgrave_fBm(p, dimension, lacunarity, octaves);
+	mul		Fac intensity $tmp25 	%line{221} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:222
+# 	else if (type == "hybrid_multifractal")
+	eq		$tmp44 type $const16 	%line{222} %argrw{"wrr"}
+	if		$tmp44 196 322 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:223
+# 		Fac = intensity * noise_musgrave_hybrid_multi_fractal(p, dimension, lacunarity, octaves, Offset, Gain);
+	functioncall	$const17 195 	%line{223} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:128
+# 	float pwHL = pow(lacunarity, -H);
+	neg		$tmp46 dimension 	%line{128} %argrw{"wr"}
+	pow		___377_pwHL lacunarity $tmp46 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:129
+# 	float pwr = pwHL;
+	assign		___377_pwr ___377_pwHL 	%line{129} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:131
+# 	point p = ip;
+	assign		___377_p p 	%line{131} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:133
+# 	result = safe_noise(p, "signed") + offset;
+	functioncall	$const10 136 	%line{133} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:92
+# 	float f = 0.0;
+	assign		___360_f $const2 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h"} %line{92} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:95
+# 	if (type == "signed")
+	eq		$tmp48 $const9 $const9 	%line{95} %argrw{"wrr"}
+	if		$tmp48 129 130 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:96
+# 		f = noise("perlin", p);
+	noise		___360_f $const11 ___377_p 	%line{96} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:100
+# 		f = noise(p);
+	noise		___360_f ___377_p 	%line{100} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:103
+# 	if (!isfinite(f))
+	isfinite	$tmp49 ___360_f 	%line{103} %argrw{"wr"}
+	eq		$tmp50 $tmp49 $const8 	%argrw{"wrr"}
+	if		$tmp50 135 135 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:104
+# 		return 0.5;
+	assign		$tmp47 $const12 	%line{104} %argrw{"wr"}
+	return
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:106
+# 	return f;
+	assign		$tmp47 ___360_f 	%line{106} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:133
+# 	result = safe_noise(p, "signed") + offset;
+	add		___377_result $tmp47 Offset 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl"} %line{133} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:134
+# 	weight = gain * result;
+	mul		___377_weight Gain ___377_result 	%line{134} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:135
+# 	p *= lacunarity;
+	mul		___377_p ___377_p lacunarity 	%line{135} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:137
+# 	for (i = 1; (weight > 0.001) && (i < (int)octaves); i++) {
+	for		$tmp56 141 149 172 174 	%line{137} %argrw{"r"}
+	assign		___377_i $const13 	%argrw{"wr"}
+	gt		$tmp51 ___377_weight $const18 	%argrw{"wrr"}
+	neq		$tmp52 $tmp51 $const8 	%argrw{"wrr"}
+	if		$tmp52 148 148 	%argrw{"r"}
+	assign		$tmp53 octaves 	%argrw{"wr"}
+	lt		$tmp54 ___377_i $tmp53 	%argrw{"wrr"}
+	neq		$tmp55 $tmp54 $const8 	%argrw{"wrr"}
+	assign		$tmp52 $tmp55 	%argrw{"wr"}
+	neq		$tmp56 $tmp52 $const8 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:138
+# 		if (weight > 1.0)
+	gt		$tmp57 ___377_weight $const5 	%line{138} %argrw{"wrr"}
+	if		$tmp57 152 152 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:139
+# 			weight = 1.0;
+	assign		___377_weight $const5 	%line{139} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:141
+# 		signal = (safe_noise(p, "signed") + offset) * pwr;
+	functioncall	$const10 164 	%line{141} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:92
+# 	float f = 0.0;
+	assign		___360_f $const2 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h"} %line{92} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:95
+# 	if (type == "signed")
+	eq		$tmp59 $const9 $const9 	%line{95} %argrw{"wrr"}
+	if		$tmp59 157 158 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:96
+# 		f = noise("perlin", p);
+	noise		___360_f $const11 ___377_p 	%line{96} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:100
+# 		f = noise(p);
+	noise		___360_f ___377_p 	%line{100} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:103
+# 	if (!isfinite(f))
+	isfinite	$tmp60 ___360_f 	%line{103} %argrw{"wr"}
+	eq		$tmp61 $tmp60 $const8 	%argrw{"wrr"}
+	if		$tmp61 163 163 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:104
+# 		return 0.5;
+	assign		$tmp58 $const12 	%line{104} %argrw{"wr"}
+	return
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:106
+# 	return f;
+	assign		$tmp58 ___360_f 	%line{106} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:141
+# 		signal = (safe_noise(p, "signed") + offset) * pwr;
+	add		$tmp62 $tmp58 Offset 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl"} %line{141} %argrw{"wrr"}
+	mul		___377_signal $tmp62 ___377_pwr 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:142
+# 		pwr *= pwHL;
+	mul		___377_pwr ___377_pwr ___377_pwHL 	%line{142} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:143
+# 		result += weight * signal;
+	mul		$tmp63 ___377_weight ___377_signal 	%line{143} %argrw{"wrr"}
+	add		___377_result ___377_result $tmp63 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:144
+# 		weight *= gain * signal;
+	mul		$tmp64 Gain ___377_signal 	%line{144} %argrw{"wrr"}
+	mul		___377_weight ___377_weight $tmp64 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:145
+# 		p *= lacunarity;
+	mul		___377_p ___377_p lacunarity 	%line{145} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:137
+# 	for (i = 1; (weight > 0.001) && (i < (int)octaves); i++) {
+	assign		$tmp65 ___377_i 	%line{137} %argrw{"wr"}
+	add		___377_i ___377_i $const13 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:148
+# 	rmd = octaves - floor(octaves);
+	floor		$tmp66 octaves 	%line{148} %argrw{"wr"}
+	sub		___377_rmd octaves $tmp66 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:149
+# 	if (rmd != 0.0)
+	neq		$tmp67 ___377_rmd $const2 	%line{149} %argrw{"wrr"}
+	if		$tmp67 194 194 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:150
+# 		result += rmd * ((safe_noise(p, "signed") + offset) * pwr);
+	functioncall	$const10 190 	%line{150} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:92
+# 	float f = 0.0;
+	assign		___360_f $const2 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h"} %line{92} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:95
+# 	if (type == "signed")
+	eq		$tmp69 $const9 $const9 	%line{95} %argrw{"wrr"}
+	if		$tmp69 183 184 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:96
+# 		f = noise("perlin", p);
+	noise		___360_f $const11 ___377_p 	%line{96} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:100
+# 		f = noise(p);
+	noise		___360_f ___377_p 	%line{100} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:103
+# 	if (!isfinite(f))
+	isfinite	$tmp70 ___360_f 	%line{103} %argrw{"wr"}
+	eq		$tmp71 $tmp70 $const8 	%argrw{"wrr"}
+	if		$tmp71 189 189 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:104
+# 		return 0.5;
+	assign		$tmp68 $const12 	%line{104} %argrw{"wr"}
+	return
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:106
+# 	return f;
+	assign		$tmp68 ___360_f 	%line{106} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:150
+# 		result += rmd * ((safe_noise(p, "signed") + offset) * pwr);
+	add		$tmp72 $tmp68 Offset 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl"} %line{150} %argrw{"wrr"}
+	mul		$tmp73 $tmp72 ___377_pwr 	%argrw{"wrr"}
+	mul		$tmp74 ___377_rmd $tmp73 	%argrw{"wrr"}
+	add		___377_result ___377_result $tmp74 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:152
+# 	return result;
+	assign		$tmp45 ___377_result 	%line{152} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:223
+# 		Fac = intensity * noise_musgrave_hybrid_multi_fractal(p, dimension, lacunarity, octaves, Offset, Gain);
+	mul		Fac intensity $tmp45 	%line{223} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:224
+# 	else if (type == "ridged_multifractal")
+	eq		$tmp75 type $const19 	%line{224} %argrw{"wrr"}
+	if		$tmp75 253 322 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:225
+# 		Fac = intensity * noise_musgrave_ridged_multi_fractal(p, dimension, lacunarity, octaves, Offset, Gain);
+	functioncall	$const20 252 	%line{225} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:167
+# 	float pwHL = pow(lacunarity, -H);
+	neg		$tmp77 dimension 	%line{167} %argrw{"wr"}
+	pow		___380_pwHL lacunarity $tmp77 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:168
+# 	float pwr = pwHL;
+	assign		___380_pwr ___380_pwHL 	%line{168} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:170
+# 	point p = ip;
+	assign		___380_p p 	%line{170} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:172
+# 	signal = offset - fabs(safe_noise(p, "signed"));
+	functioncall	$const10 215 	%line{172} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:92
+# 	float f = 0.0;
+	assign		___360_f $const2 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h"} %line{92} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:95
+# 	if (type == "signed")
+	eq		$tmp80 $const9 $const9 	%line{95} %argrw{"wrr"}
+	if		$tmp80 208 209 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:96
+# 		f = noise("perlin", p);
+	noise		___360_f $const11 ___380_p 	%line{96} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:100
+# 		f = noise(p);
+	noise		___360_f ___380_p 	%line{100} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:103
+# 	if (!isfinite(f))
+	isfinite	$tmp81 ___360_f 	%line{103} %argrw{"wr"}
+	eq		$tmp82 $tmp81 $const8 	%argrw{"wrr"}
+	if		$tmp82 214 214 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:104
+# 		return 0.5;
+	assign		$tmp79 $const12 	%line{104} %argrw{"wr"}
+	return
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:106
+# 	return f;
+	assign		$tmp79 ___360_f 	%line{106} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:172
+# 	signal = offset - fabs(safe_noise(p, "signed"));
+	fabs		$tmp78 $tmp79 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl"} %line{172} %argrw{"wr"}
+	sub		___380_signal Offset $tmp78 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:173
+# 	signal *= signal;
+	mul		___380_signal ___380_signal ___380_signal 	%line{173} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:174
+# 	result = signal;
+	assign		___380_result ___380_signal 	%line{174} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:175
+# 	weight = 1.0;
+	assign		___380_weight $const5 	%line{175} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:177
+# 	for (i = 1; i < (int)octaves; i++) {
+	for		$tmp85 222 225 249 251 	%line{177} %argrw{"r"}
+	assign		___380_i $const13 	%argrw{"wr"}
+	assign		$tmp83 octaves 	%argrw{"wr"}
+	lt		$tmp84 ___380_i $tmp83 	%argrw{"wrr"}
+	neq		$tmp85 $tmp84 $const8 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:178
+# 		p *= lacunarity;
+	mul		___380_p ___380_p lacunarity 	%line{178} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:179
+# 		weight = clamp(signal * gain, 0.0, 1.0);
+	mul		$tmp86 ___380_signal Gain 	%line{179} %argrw{"wrr"}
+	functioncall	$const4 230 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/stdosl.h:144
+# float  clamp (float x, float minval, float maxval) { return max(min(x,maxval),minval); }
+	min		$tmp87 $tmp86 $const5 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/stdosl.h"} %line{144} %argrw{"wrr"}
+	max		___380_weight $tmp87 $const2 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:180
+# 		signal = offset - fabs(safe_noise(p, "signed"));
+	functioncall	$const10 242 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl"} %line{180} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:92
+# 	float f = 0.0;
+	assign		___360_f $const2 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h"} %line{92} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:95
+# 	if (type == "signed")
+	eq		$tmp90 $const9 $const9 	%line{95} %argrw{"wrr"}
+	if		$tmp90 235 236 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:96
+# 		f = noise("perlin", p);
+	noise		___360_f $const11 ___380_p 	%line{96} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:100
+# 		f = noise(p);
+	noise		___360_f ___380_p 	%line{100} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:103
+# 	if (!isfinite(f))
+	isfinite	$tmp91 ___360_f 	%line{103} %argrw{"wr"}
+	eq		$tmp92 $tmp91 $const8 	%argrw{"wrr"}
+	if		$tmp92 241 241 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:104
+# 		return 0.5;
+	assign		$tmp89 $const12 	%line{104} %argrw{"wr"}
+	return
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:106
+# 	return f;
+	assign		$tmp89 ___360_f 	%line{106} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:180
+# 		signal = offset - fabs(safe_noise(p, "signed"));
+	fabs		$tmp88 $tmp89 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl"} %line{180} %argrw{"wr"}
+	sub		___380_signal Offset $tmp88 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:181
+# 		signal *= signal;
+	mul		___380_signal ___380_signal ___380_signal 	%line{181} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:182
+# 		signal *= weight;
+	mul		___380_signal ___380_signal ___380_weight 	%line{182} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:183
+# 		result += signal * pwr;
+	mul		$tmp93 ___380_signal ___380_pwr 	%line{183} %argrw{"wrr"}
+	add		___380_result ___380_result $tmp93 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:184
+# 		pwr *= pwHL;
+	mul		___380_pwr ___380_pwr ___380_pwHL 	%line{184} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:177
+# 	for (i = 1; i < (int)octaves; i++) {
+	assign		$tmp94 ___380_i 	%line{177} %argrw{"wr"}
+	add		___380_i ___380_i $const13 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:187
+# 	return result;
+	assign		$tmp76 ___380_result 	%line{187} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:225
+# 		Fac = intensity * noise_musgrave_ridged_multi_fractal(p, dimension, lacunarity, octaves, Offset, Gain);
+	mul		Fac intensity $tmp76 	%line{225} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:226
+# 	else if (type == "hetero_terrain")
+	eq		$tmp95 type $const21 	%line{226} %argrw{"wrr"}
+	if		$tmp95 322 322 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:227
+# 		Fac = intensity * noise_musgrave_hetero_terrain(p, dimension, lacunarity, octaves, Offset);
+	functioncall	$const22 321 	%line{227} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:91
+# 	float pwHL = pow(lacunarity, -H);
+	neg		$tmp97 dimension 	%line{91} %argrw{"wr"}
+	pow		___373_pwHL lacunarity $tmp97 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:92
+# 	float pwr = pwHL;
+	assign		___373_pwr ___373_pwHL 	%line{92} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:94
+# 	point p = ip;
+	assign		___373_p p 	%line{94} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:97
+# 	value = offset + safe_noise(p, "signed");
+	functioncall	$const10 272 	%line{97} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:92
+# 	float f = 0.0;
+	assign		___360_f $const2 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h"} %line{92} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:95
+# 	if (type == "signed")
+	eq		$tmp99 $const9 $const9 	%line{95} %argrw{"wrr"}
+	if		$tmp99 265 266 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:96
+# 		f = noise("perlin", p);
+	noise		___360_f $const11 ___373_p 	%line{96} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:100
+# 		f = noise(p);
+	noise		___360_f ___373_p 	%line{100} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:103
+# 	if (!isfinite(f))
+	isfinite	$tmp100 ___360_f 	%line{103} %argrw{"wr"}
+	eq		$tmp101 $tmp100 $const8 	%argrw{"wrr"}
+	if		$tmp101 271 271 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:104
+# 		return 0.5;
+	assign		$tmp98 $const12 	%line{104} %argrw{"wr"}
+	return
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:106
+# 	return f;
+	assign		$tmp98 ___360_f 	%line{106} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:97
+# 	value = offset + safe_noise(p, "signed");
+	add		___373_value Offset $tmp98 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl"} %line{97} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:98
+# 	p *= lacunarity;
+	mul		___373_p ___373_p lacunarity 	%line{98} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:100
+# 	for (i = 1; i < (int)octaves; i++) {
+	for		$tmp104 276 279 297 299 	%line{100} %argrw{"r"}
+	assign		___373_i $const13 	%argrw{"wr"}
+	assign		$tmp102 octaves 	%argrw{"wr"}
+	lt		$tmp103 ___373_i $tmp102 	%argrw{"wrr"}
+	neq		$tmp104 $tmp103 $const8 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:101
+# 		increment = (safe_noise(p, "signed") + offset) * pwr * value;
+	functioncall	$const10 291 	%line{101} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:92
+# 	float f = 0.0;
+	assign		___360_f $const2 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h"} %line{92} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:95
+# 	if (type == "signed")
+	eq		$tmp106 $const9 $const9 	%line{95} %argrw{"wrr"}
+	if		$tmp106 284 285 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:96
+# 		f = noise("perlin", p);
+	noise		___360_f $const11 ___373_p 	%line{96} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:100
+# 		f = noise(p);
+	noise		___360_f ___373_p 	%line{100} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:103
+# 	if (!isfinite(f))
+	isfinite	$tmp107 ___360_f 	%line{103} %argrw{"wr"}
+	eq		$tmp108 $tmp107 $const8 	%argrw{"wrr"}
+	if		$tmp108 290 290 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:104
+# 		return 0.5;
+	assign		$tmp105 $const12 	%line{104} %argrw{"wr"}
+	return
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:106
+# 	return f;
+	assign		$tmp105 ___360_f 	%line{106} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:101
+# 		increment = (safe_noise(p, "signed") + offset) * pwr * value;
+	add		$tmp109 $tmp105 Offset 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl"} %line{101} %argrw{"wrr"}
+	mul		$tmp110 $tmp109 ___373_pwr 	%argrw{"wrr"}
+	mul		___373_increment $tmp110 ___373_value 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:102
+# 		value += increment;
+	add		___373_value ___373_value ___373_increment 	%line{102} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:103
+# 		pwr *= pwHL;
+	mul		___373_pwr ___373_pwr ___373_pwHL 	%line{103} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:104
+# 		p *= lacunarity;
+	mul		___373_p ___373_p lacunarity 	%line{104} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:100
+# 	for (i = 1; i < (int)octaves; i++) {
+	assign		$tmp111 ___373_i 	%line{100} %argrw{"wr"}
+	add		___373_i ___373_i $const13 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:107
+# 	rmd = octaves - floor(octaves);
+	floor		$tmp112 octaves 	%line{107} %argrw{"wr"}
+	sub		___373_rmd octaves $tmp112 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:108
+# 	if (rmd != 0.0) {
+	neq		$tmp113 ___373_rmd $const2 	%line{108} %argrw{"wrr"}
+	if		$tmp113 320 320 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:109
+# 		increment = (safe_noise(p, "signed") + offset) * pwr * value;
+	functioncall	$const10 315 	%line{109} %argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:92
+# 	float f = 0.0;
+	assign		___360_f $const2 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h"} %line{92} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:95
+# 	if (type == "signed")
+	eq		$tmp115 $const9 $const9 	%line{95} %argrw{"wrr"}
+	if		$tmp115 308 309 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:96
+# 		f = noise("perlin", p);
+	noise		___360_f $const11 ___373_p 	%line{96} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:100
+# 		f = noise(p);
+	noise		___360_f ___373_p 	%line{100} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:103
+# 	if (!isfinite(f))
+	isfinite	$tmp116 ___360_f 	%line{103} %argrw{"wr"}
+	eq		$tmp117 $tmp116 $const8 	%argrw{"wrr"}
+	if		$tmp117 314 314 	%argrw{"r"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:104
+# 		return 0.5;
+	assign		$tmp114 $const12 	%line{104} %argrw{"wr"}
+	return
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_texture.h:106
+# 	return f;
+	assign		$tmp114 ___360_f 	%line{106} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:109
+# 		increment = (safe_noise(p, "signed") + offset) * pwr * value;
+	add		$tmp118 $tmp114 Offset 	%filename{"/build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl"} %line{109} %argrw{"wrr"}
+	mul		$tmp119 $tmp118 ___373_pwr 	%argrw{"wrr"}
+	mul		___373_increment $tmp119 ___373_value 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:110
+# 		value += rmd * increment;
+	mul		$tmp120 ___373_rmd ___373_increment 	%line{110} %argrw{"wrr"}
+	add		___373_value ___373_value $tmp120 	%argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:113
+# 	return value;
+	assign		$tmp96 ___373_value 	%line{113} %argrw{"wr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:227
+# 		Fac = intensity * noise_musgrave_hetero_terrain(p, dimension, lacunarity, octaves, Offset);
+	mul		Fac intensity $tmp96 	%line{227} %argrw{"wrr"}
+# /build/blender-2.7-es2/src/blender/intern/cycles/kernel/shaders/node_musgrave_texture.osl:229
+# 	Color = color(Fac, Fac, Fac);
+	color		Color Fac Fac Fac 	%line{229} %argrw{"wrrr"}
+	end

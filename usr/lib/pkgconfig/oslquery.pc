@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: oslquery
+Description: oslquery Query parameters of OSL compiled shaders
+URL: https://github.com/AcademySoftwareFoundation/OpenShadingLanguage
+Version: 1.11.14
+Libs: -L${libdir} -loslquery
+Cflags: -I${includedir}
